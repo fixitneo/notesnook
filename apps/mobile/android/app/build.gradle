@@ -135,7 +135,7 @@ android {
     }
     namespace "com.streetwriters.notesnook"
     defaultConfig {
-        applicationId "com.streetwriters.notesnook"
+        applicationId "com.streetwriters.notesnook.popupfix"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
@@ -166,10 +166,18 @@ android {
             keyPassword 'android'
         }
           release {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            def releaseStore = System.getenv("NOTESNOOK_RELEASE_STORE_FILE")
+            if (releaseStore) {
+                storeFile file(releaseStore)
+                storePassword System.getenv("NOTESNOOK_RELEASE_STORE_PASSWORD")
+                keyAlias System.getenv("NOTESNOOK_RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("NOTESNOOK_RELEASE_KEY_PASSWORD")
+            } else {
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
     }
     buildTypes {
